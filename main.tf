@@ -18,7 +18,7 @@ data "aws_vpc" "default" {
   default = true
 }
 
-recource "aws_instance" "blog" {
+resource "aws_instance" "blog" {
   ami           = data.aws_ami.app_ami.id
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_secutity_group.id]
@@ -28,14 +28,14 @@ recource "aws_instance" "blog" {
   }
 }
 
-recource "aws_secutity_group" "blog" {
+resource "aws_secutity_group" "blog" {
   name        = "blog"
   description = "Allow http and https in. Allow everything out."
 
   vpc_id = data.aws_vpc.default.id
 }
 
-recource "aws_security_group_rule" "blog_http_in" {
+resource "aws_security_group_rule" "blog_http_in" {
   type        = "ingress"
   from_port   = 80
   to_port     = 80
@@ -45,7 +45,7 @@ recource "aws_security_group_rule" "blog_http_in" {
   security_group_id = aws_secutity_group.blog.id
 }
 
-recource "aws_security_group_role" "blog_https_in" {
+resource "aws_security_group_role" "blog_https_in" {
   type        = "ingress"
   from_port   = 443
   to_port     = 443
@@ -55,7 +55,7 @@ recource "aws_security_group_role" "blog_https_in" {
   security_group_id = data.aws_vpc.default.id
 }
 
-recource "aws_security_group_role" "blog_everything_out" {
+resource "aws_security_group_role" "blog_everything_out" {
   type        = "egress"
   from_port   = 0
   to_port     = 0 
