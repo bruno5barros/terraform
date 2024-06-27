@@ -21,14 +21,14 @@ data "aws_vpc" "default" {
 resource "aws_instance" "blog" {
   ami           = data.aws_ami.app_ami.id
   instance_type = var.instance_type
-  vpc_security_group_ids = [aws_secutity_group.id]
+  vpc_security_group_ids = [aws_security_group.id]
 
   tags {
     Name = "Learning Terraform"
   }
 }
 
-resource "aws_secutity_group" "blog" {
+resource "aws_security_group" "blog" {
   name        = "blog"
   description = "Allow http and https in. Allow everything out."
 
@@ -42,7 +42,7 @@ resource "aws_security_group_rule" "blog_http_in" {
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 
-  security_group_id = aws_secutity_group.blog.id
+  security_group_id = aws_security_group.blog.id
 }
 
 resource "aws_security_group_role" "blog_https_in" {
