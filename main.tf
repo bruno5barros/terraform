@@ -16,7 +16,7 @@ data "aws_ami" "app_ami" {
 
 module "blog_vpc" {
   source = "terraform-aws-modules/vpc/aws"
-  name = "vpc_dev"
+  name = "${var.environment.name}-vpc_dev"
   cidr = "${var.environment.network_prefix}0.0/16"
   azs = ["us-west-2a", "us-west-2b", "us-west-2c"]
   public_subnets = ["${var.environment.network_prefix}101.0/24", "${var.environment.network_prefix}102.0/24", "${var.environment.network_prefix}103.0/24"]
@@ -30,7 +30,7 @@ module "blog_vpc" {
 module "blog_autoscaling" {
   source   = "terraform-aws-modules/autoscaling/aws"
   version  = "6.5.2"
-  name     = "blog_autoscaling"
+  name     = "${var.environment.name}-blog_autoscaling"
   min_size = var.blog_autoscaling.min_size
   max_size = var.blog_autoscaling.max_size
 
@@ -44,7 +44,7 @@ module "blog_autoscaling" {
 module "blog_alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 6.0"
-  name    = "blog-alb"
+  name    = "${var.environment.name}-blog-alb"
 
   load_balancer_type = "application"
 
@@ -54,7 +54,7 @@ module "blog_alb" {
   
   target_groups = [
     {
-      name_prefix      = "blog-"
+      name_prefix      = "${var.environment.name}-"
       backend_protocol = "HTTP"
       backend_port     = 80
       target_type      = "instance"
@@ -77,7 +77,7 @@ module "blog_alb" {
 module "blog_sg" {
   source = "terraform-aws-modules/security-group/aws"
   version = "4.13.0"
-  name = "blog_sg"
+  name = "${var.environment.name}-blog_sg"
 
   vpc_id = module.blog_vpc.vpc_id
 
